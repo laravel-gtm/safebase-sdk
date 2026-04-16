@@ -2,28 +2,28 @@
 
 declare(strict_types=1);
 
-namespace YourVendor\SaloonApiSdk\Laravel;
+namespace LaravelGtm\SafebaseSdk\Laravel;
 
 use Illuminate\Contracts\Cache\Factory as CacheFactory;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Support\ServiceProvider;
+use LaravelGtm\SafebaseSdk\SafebaseConnector;
+use LaravelGtm\SafebaseSdk\SafebaseSdk;
 use Saloon\RateLimitPlugin\Stores\LaravelCacheStore;
-use YourVendor\SaloonApiSdk\SaloonApiSdk;
-use YourVendor\SaloonApiSdk\SaloonConnector;
 
-class SaloonApiSdkServiceProvider extends ServiceProvider
+class SafebaseServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        $this->mergeConfigFrom(__DIR__.'/../../config/saloon-api-sdk-boilerplate.php', 'saloon-api-sdk-boilerplate');
+        $this->mergeConfigFrom(__DIR__.'/../../config/safebase-sdk.php', 'safebase-sdk');
 
-        $this->app->singleton(SaloonConnector::class, function (): SaloonConnector {
+        $this->app->singleton(SafebaseConnector::class, function (): SafebaseConnector {
             $configRepository = $this->app->make(ConfigRepository::class);
             $cacheFactory = $this->app->make(CacheFactory::class);
             /** @var array<string, mixed> $config */
-            $config = (array) $configRepository->get('saloon-api-sdk-boilerplate', []);
+            $config = (array) $configRepository->get('safebase-sdk', []);
 
-            return new SaloonConnector(
+            return new SafebaseConnector(
                 isset($config['base_url']) ? (string) $config['base_url'] : null,
                 isset($config['token']) ? (string) $config['token'] : null,
                 isset($config['auth_header']) ? (string) $config['auth_header'] : 'X-Api-Key',
@@ -31,8 +31,8 @@ class SaloonApiSdkServiceProvider extends ServiceProvider
             );
         });
 
-        $this->app->singleton(SaloonApiSdk::class, function (): SaloonApiSdk {
-            return new SaloonApiSdk($this->app->make(SaloonConnector::class));
+        $this->app->singleton(SafebaseSdk::class, function (): SafebaseSdk {
+            return new SafebaseSdk($this->app->make(SafebaseConnector::class));
         });
     }
 
@@ -40,8 +40,8 @@ class SaloonApiSdkServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                __DIR__.'/../../config/saloon-api-sdk-boilerplate.php' => $this->app->configPath('saloon-api-sdk-boilerplate.php'),
-            ], 'saloon-api-sdk-boilerplate-config');
+                __DIR__.'/../../config/safebase-sdk.php' => $this->app->configPath('safebase-sdk.php'),
+            ], 'safebase-sdk-config');
         }
     }
 }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace YourVendor\SaloonApiSdk;
+namespace LaravelGtm\SafebaseSdk;
 
 use Saloon\Http\Auth\HeaderAuthenticator;
 use Saloon\Http\Connector;
@@ -14,7 +14,7 @@ use Saloon\RateLimitPlugin\Traits\HasRateLimits;
 use Saloon\Traits\Plugins\AlwaysThrowOnErrors;
 use Saloon\Traits\Plugins\HasTimeout;
 
-class SaloonConnector extends Connector
+class SafebaseConnector extends Connector
 {
     use AlwaysThrowOnErrors;
     use HasRateLimits;
@@ -37,7 +37,7 @@ class SaloonConnector extends Connector
 
     public function resolveBaseUrl(): string
     {
-        return rtrim($this->baseUrl ?? 'https://api.example.com', '/');
+        return rtrim($this->baseUrl ?? 'https://app.safebase.io/api/ext/v1/rest', '/');
     }
 
     protected function defaultAuth(): ?HeaderAuthenticator

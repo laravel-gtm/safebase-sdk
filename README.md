@@ -13,7 +13,7 @@ This repository is intended to be used as a [GitHub template](https://docs.githu
 
 This template includes the same rule layout as the `luma-sdk` package: [`.claude/rules/`](.claude/rules/) (`saloon.md`, `php-package-phpstan.md`, `laravel-package.md`) for Claude Code, and [`.cursor/rules/`](.cursor/rules/) (`.mdc` mirrors with `globs` front matter) for Cursor. The Laravel rules file notes that **this repo uses `laravel/pint` in `require-dev`** and `composer lint` / `composer format`, which differs from the optional “global Pint only” wording elsewhere in that document.
 
-[Laravel Boost](https://github.com/laravel/boost)-style helpers live under [`resources/boost/`](resources/boost/): [`guidelines/core.blade.php`](resources/boost/guidelines/core.blade.php) (stub) and two skills — a one-time **[`saloon-api-sdk-boilerplate-initial-setup`](resources/boost/skills/saloon-api-sdk-boilerplate-initial-setup/SKILL.md)** skill that generates API-specific content, and a **[`saloon-api-sdk-boilerplate-development`](resources/boost/skills/saloon-api-sdk-boilerplate-development/SKILL.md)** skill (stub until the initial-setup skill is run). The init script renames both skill folders to use your package slug (`{package-slug}-initial-setup` and `{package-slug}-development`).
+[Laravel Boost](https://github.com/laravel/boost)-style helpers live under [`resources/boost/`](resources/boost/): [`guidelines/core.blade.php`](resources/boost/guidelines/core.blade.php) (stub) and two skills — a one-time **[`safebase-sdk-initial-setup`](resources/boost/skills/safebase-sdk-initial-setup/SKILL.md)** skill that generates API-specific content, and a **[`safebase-sdk-development`](resources/boost/skills/safebase-sdk-development/SKILL.md)** skill (stub until the initial-setup skill is run). The init script renames both skill folders to use your package slug (`{package-slug}-initial-setup` and `{package-slug}-development`).
 
 [CLAUDE.md](CLAUDE.md) at the repo root summarizes commands, checks, and architecture; run `./init-saloon-sdk.sh` once after creating a new repo so names in that file match your package.
 
@@ -27,10 +27,10 @@ This template includes the same rule layout as the `luma-sdk` package: [`.claude
 
 2. Run the initializer at the repo root. It will prompt for:
 
-   - **Composer vendor** — replaces `your-vendor` (e.g. `laravel-gtm`).
-   - **Package slug** — replaces `saloon-api-sdk-boilerplate` everywhere, including the second segment of the Composer name and the config file basename (e.g. `hubspot-sdk` → `laravel-gtm/hubspot-sdk`).
+   - **Composer vendor** — replaces `laravel-gtm` (e.g. `laravel-gtm`).
+   - **Package slug** — replaces `safebase-sdk` everywhere, including the second segment of the Composer name and the config file basename (e.g. `hubspot-sdk` → `laravel-gtm/hubspot-sdk`).
    - **Short class prefix** — PascalCase, **without** `Sdk` on the end; the script adds `Sdk`, `Connector`, and `ServiceProvider` for you (e.g. `Hubspot` → `HubspotSdk`, `HubspotConnector`, `HubspotServiceProvider`).
-   - **Env prefix** — replaces `SALOON_API_SDK_` in the published config (e.g. `HUBSPOT_API`).
+   - **Env prefix** — replaces `SAFEBASE_` in the published config (e.g. `HUBSPOT_API`).
    - **Default API base URL**.
 
    The PHP root namespace is derived as `{VendorPascal}{Prefix}Sdk` (e.g. `laravel-gtm` + `Hubspot` → `LaravelGtm\HubspotSdk`). `composer.json` keeps JSON’s doubled backslashes (`\\`) in `autoload` and `extra.laravel.providers`; you do not need to type those.
@@ -47,7 +47,7 @@ This template includes the same rule layout as the `luma-sdk` package: [`.claude
    export PACKAGE_SLUG='hubspot-sdk'
    export SHORT_PREFIX='Hubspot'
    export ENV_PREFIX='HUBSPOT_API'
-   export DEFAULT_BASE_URL='https://api.example.com'
+   export DEFAULT_BASE_URL='https://app.safebase.io'
    ./init-saloon-sdk.sh
    ```
 
@@ -63,9 +63,9 @@ This template includes the same rule layout as the `luma-sdk` package: [`.claude
 
 4. Replace the example `ExampleGetRequest` / `ping()` flow with real endpoints, DTOs, and resources for your API.
 
-5. Once you have added initial request classes, response DTOs, and resource methods, run the **`saloon-api-sdk-boilerplate-initial-setup`** Boost skill (via an AI agent) to generate API-specific content for:
+5. Once you have added initial request classes, response DTOs, and resource methods, run the **`safebase-sdk-initial-setup`** Boost skill (via an AI agent) to generate API-specific content for:
 
-   - `resources/boost/skills/saloon-api-sdk-boilerplate-development/SKILL.md` — comprehensive development guide with real class names, code examples, and testing patterns
+   - `resources/boost/skills/safebase-sdk-development/SKILL.md` — comprehensive development guide with real class names, code examples, and testing patterns
    - `resources/boost/guidelines/core.blade.php` — Boost guidelines with setup instructions and code snippets
 
    This replaces the placeholder stubs with real documentation matching your SDK's structure. After the init script, the skill name will be `{your-package-slug}-initial-setup`.
@@ -74,35 +74,35 @@ This template includes the same rule layout as the `luma-sdk` package: [`.claude
 
 ## Configuration (Laravel)
 
-Publish the config (before init the tag is `saloon-api-sdk-boilerplate-config`; after init it becomes `{your-package-slug}-config`):
+Publish the config (before init the tag is `safebase-sdk-config`; after init it becomes `{your-package-slug}-config`):
 
 ```bash
-php artisan vendor:publish --tag=saloon-api-sdk-boilerplate-config
+php artisan vendor:publish --tag=safebase-sdk-config
 ```
 
-After running the init script, use your package slug in the tag (e.g. `hubspot-sdk-config`). Env keys use your chosen `ENV_PREFIX` (defaults before init use `SALOON_API_SDK_*`):
+After running the init script, use your package slug in the tag (e.g. `hubspot-sdk-config`). Env keys use your chosen `ENV_PREFIX` (defaults before init use `SAFEBASE_*`):
 
-- `SALOON_API_SDK_BASE_URL`
-- `SALOON_API_SDK_TOKEN`
-- `SALOON_API_SDK_AUTH_HEADER`
+- `SAFEBASE_BASE_URL`
+- `SAFEBASE_TOKEN`
+- `SAFEBASE_AUTH_HEADER`
 
 ## Usage
 
 ### Via the service container
 
 ```php
-use YourVendor\SaloonApiSdk\SaloonApiSdk;
+use LaravelGtm\SafebaseSdk\SafebaseSdk;
 
-$sdk = app(SaloonApiSdk::class);
+$sdk = app(SafebaseSdk::class);
 ```
 
 ### Standalone
 
 ```php
-use YourVendor\SaloonApiSdk\SaloonApiSdk;
+use LaravelGtm\SafebaseSdk\SafebaseSdk;
 
-$sdk = SaloonApiSdk::make(
-    baseUrl: 'https://api.example.com',
+$sdk = SafebaseSdk::make(
+    baseUrl: 'https://app.safebase.io',
     token: 'your-token',
 );
 ```

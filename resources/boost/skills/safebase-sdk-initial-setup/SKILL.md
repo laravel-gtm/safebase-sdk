@@ -1,5 +1,5 @@
 ---
-name: saloon-api-sdk-boilerplate-initial-setup
+name: safebase-sdk-initial-setup
 description: One-time skill to generate API-specific development skill and guidelines after running the init script.
 ---
 
@@ -7,7 +7,7 @@ description: One-time skill to generate API-specific development skill and guide
 
 ## When to use this skill
 
-Run this skill **once** after `./init-saloon-sdk.sh` has completed and you have started building out the SDK (added a connector, some request classes, and response DTOs). This skill generates the `saloon-api-sdk-boilerplate-development` skill and `guidelines/core.blade.php` with content specific to your API, replacing the placeholder stubs that ship with the template.
+Run this skill **once** after `./init-saloon-sdk.sh` has completed and you have started building out the SDK (added a connector, some request classes, and response DTOs). This skill generates the `safebase-sdk-development` skill and `guidelines/core.blade.php` with content specific to your API, replacing the placeholder stubs that ship with the template.
 
 Do not run this skill again after the development skill and guidelines have been populated.
 
@@ -24,18 +24,18 @@ Read and understand the current SDK structure:
 5. **`src/Responses/`** — every response DTO, its properties and `fromArray()` shape
 6. **`src/Resources/`** (if it exists) — resource groupings and their methods
 7. **`src/ValueObjects/`** and **`src/Enums/`** (if they exist)
-8. **`config/saloon-api-sdk-boilerplate.php`** — configuration keys, env var names
+8. **`config/safebase-sdk.php`** — configuration keys, env var names
 9. **API documentation** — look for `openapi.json`, `openapi.yaml`, `swagger.json`, a `docs/` directory, or documentation URLs in `README.md`
 
 ### Step 2 — Generate the development skill
 
-Write API-specific content to `resources/boost/skills/saloon-api-sdk-boilerplate-development/SKILL.md`, replacing the stub. Follow this structure:
+Write API-specific content to `resources/boost/skills/safebase-sdk-development/SKILL.md`, replacing the stub. Follow this structure:
 
 **Frontmatter:**
 
 ```yaml
 ---
-name: saloon-api-sdk-boilerplate-development
+name: safebase-sdk-development
 description: <Rewrite to describe this specific API SDK, e.g. "Build features using the HubSpot CRM SDK, including contacts, companies, deals, and properties.">
 ---
 ```
@@ -44,16 +44,16 @@ description: <Rewrite to describe this specific API SDK, e.g. "Build features us
 
 1. **`# {Package name} development`** — heading using the real package name (not "Saloon API SDK template")
 
-2. **`## When to use this skill`** — name the specific package (`your-vendor/saloon-api-sdk-boilerplate`) and API. Describe what kinds of tasks this skill covers (adding endpoints, building integrations, writing tests).
+2. **`## When to use this skill`** — name the specific package (`laravel-gtm/safebase-sdk`) and API. Describe what kinds of tasks this skill covers (adding endpoints, building integrations, writing tests).
 
 3. **`## SDK entry point`** — show both injection patterns:
 
    ```php
    // Via Laravel container (recommended)
-   $sdk = app(SaloonApiSdk::class);
+   $sdk = app(SafebaseSdk::class);
 
    // Standalone
-   $sdk = SaloonApiSdk::make(
+   $sdk = SafebaseSdk::make(
        baseUrl: '...',
        token: '...',
    );
@@ -98,12 +98,12 @@ description: <Rewrite to describe this specific API SDK, e.g. "Build features us
 
 Write API-specific content to `resources/boost/guidelines/core.blade.php`, replacing the stub. Follow this structure:
 
-1. **Header** — `## {Package name} (\`your-vendor/saloon-api-sdk-boilerplate\`)`
+1. **Header** — `## {Package name} (\`laravel-gtm/safebase-sdk\`)`
 
 2. **Setup** — env vars with the real prefix and key names from config, plus the config publish command:
 
    ```
-   php artisan vendor:publish --tag=saloon-api-sdk-boilerplate-config
+   php artisan vendor:publish --tag=safebase-sdk-config
    ```
 
 3. **Usage** — brief overview of SDK instantiation and resource method access.
@@ -126,7 +126,7 @@ Write API-specific content to `resources/boost/guidelines/core.blade.php`, repla
 
 After generating both files:
 
-1. Read back `resources/boost/skills/saloon-api-sdk-boilerplate-development/SKILL.md` and confirm:
+1. Read back `resources/boost/skills/safebase-sdk-development/SKILL.md` and confirm:
    - No references to "template", "ExampleGetRequest", "ping()", or "replace the example"
    - All class names match the actual codebase
    - Code examples use real request/response classes
