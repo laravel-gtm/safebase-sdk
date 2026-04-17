@@ -1,0 +1,4 @@
+GET https://app.safebase.io/api/ext/v1/rest/accounts
+Accept: application/json
+Content-Type: application/json
+x-sb-api-key: {{SAFEBASE_TOKEN}}
